@@ -1,0 +1,25 @@
+Package: causalDML
+Type: Package
+Title: Causal Double Machine Learning
+Version: 0.1.0
+Date: 2020-08-20
+Author: Michael C. Knaus
+Maintainer: Michael C. Knaus <michael.knaus@unisg.ch>
+Description: This code implements various Double Machine Learning based methods to estimate average and heterogeneous causal effects.
+License: GPL-3
+Encoding: UTF-8
+LazyData: true
+Imports: 
+    dplyr,
+    ggplot2,
+    glmnet,
+    grf,
+    matrixStats,
+    Matrix,
+    np,
+    nnls,
+    Rcpp (>= 1.0.4.6),
+    sandwich
+#Suggests: 
+LinkingTo: Rcpp, RcppArmadillo
+RoxygenNote: 7.1.0
