@@ -131,7 +131,7 @@ ndr_learner_cate = function(ml,delta,y,x,w_mat,m_mat,e_mat,cf_mat,
   # Loop over the three folds and calculate DR- and NDR-learner and average
   for (j in 1:3) {
     if (ncol(cf_mat) != 3) stop("Please provide cf_mat with three columns that was used to create the nuisance parameters and delta.")
-    ens = do.call(ensemble,c(list(ml=ml,x=x[cf_mat[,j]],y=delta[cf_mat[,j]],xnew=xnew,nfolds=nfolds,weights=TRUE,quiet=quiet)))
+    ens = do.call(ensemble,c(list(ml=ml,x=x[cf_mat[,j],],y=delta[cf_mat[,j]],xnew=xnew,nfolds=nfolds,weights=TRUE,quiet=quiet)))
     cates[,1] = cates[,1] + 1/3 * ens$ensemble
     cates[,2] = cates[,2] + 1/3 * norm_drl_rcpp(ens$weights,m_mat[cf_mat[,j],],y[cf_mat[,j]],
                                                 1*w_mat[cf_mat[,j],],e_mat[cf_mat[,j],])
