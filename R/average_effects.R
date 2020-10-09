@@ -305,6 +305,5 @@ plot.APO_dml = function(APO_dml,label = NULL,sl=0.05) {
     theme_bw() + theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
     ylab("Average potential outcome") + theme(text=element_text(family="serif",size = 16, colour="black"),
                                               axis.title.x=element_blank())
-  print(g)
   return(g)
 }
