@@ -278,7 +278,8 @@ lasso_fit = function(x,y,args=list()) {
 #' @keywords internal
 #'
 predict.lasso_fit = function(lasso_fit,x,y,xnew=NULL,weights=FALSE) {
-  if (isTRUE(weights)) stop("No weighted representation of Lasso available.")
+  f = function() stop("No weighted representation of Lasso available.",call.=FALSE)
+  if (isTRUE(weights)) f()
   if (is.null(xnew)) xnew = x
 
   fit = predict(lasso_fit,newx=xnew,type="response",s="lambda.min")
