@@ -58,19 +58,20 @@ ndr_learner = function(y,w,x,
   # Initialize vectors to store results
   list_ndr_oos = vector("list",4)
   cates = array(NA,c(num_comp,nrow(x),2))
+  path_orig = path
 
   # Loop over four folds
   for (i in 1:4) {
     if (isFALSE(quiet)) print(paste("NDR-learner fold", toString(i)))
     oos = cfm[,i]
     if (!is.null(path)) {
-      dir.create(paste0(path,"/NDR_fold",toString(i)))
-      path_temp = paste0(path,"/NDR_fold",toString(i),"/")
+      dir.create(paste0(path_orig,"/NDR_fold",toString(i)))
+      path = paste0(path_orig,"/NDR_fold",toString(i),"/")
     }
     list_ndr_oos[[i]] = ndr_oos(y[!oos],w[!oos],x[!oos,],ml_w = ml_w,
                                         ml_y = ml_y,ml_tau = ml_tau,
-                                        cf_mat = cfm[!oos,-i],compare_all = FALSE,xnew=x[oos,],
-                                        path=path_temp,quiet=FALSE)
+                                        cf_mat = cfm[!oos,-i],compare_all = compare_all,xnew=x[oos,],
+                                        path=path,quiet=FALSE)
     for (j in 1:num_comp) {
       cates[j,oos,] = list_ndr_oos[[i]]$cates[[j]]
     }
@@ -147,6 +148,7 @@ ndr_oos = function(y,w,x,xnew,
 
   # Initialize to store results
   cates = NULL
+  path_orig = path
 
   # Loop over scores and run DR- and NDR-learner
   if (isFALSE(quiet)) print("(N)DR-learner")
@@ -158,11 +160,11 @@ ndr_oos = function(y,w,x,xnew,
       if (isFALSE(quiet)) print(paste("(N)DR-learner for comparison",toString(i),"and",toString(j)))
       delta = APO$gamma[,j] - APO$gamma[,i]
       if (!is.null(path)) {
-        dir.create(paste0(path,"/Comparison",toString(i),toString(j)))
-        path_temp = paste0(path,"/Comparison",toString(i),toString(j),"/")
+        dir.create(paste0(path_orig,"/Comparison",toString(i),toString(j)))
+        path_temp = paste0(path_orig,"/Comparison",toString(i),toString(j),"/")
       }
       cates[[pos]] = ndr_core(ml_tau,delta,y,x,APO$w_mat[,c(i,j)],APO$m_mat[,c(i,j)],
-                         APO$e_mat[,c(i,j)],cf_mat,xnew=xnew,nfolds=nfolds,path=path_temp,quiet=quiet)
+                         APO$e_mat[,c(i,j)],cf_mat,xnew=xnew,nfolds=nfolds,path=path,quiet=quiet)
       pos = pos+1
     }
   }
