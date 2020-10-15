@@ -1,7 +1,8 @@
 #' DR- and NDR-learner.
 #'
-#' This function predicts conditional average treatment effects (CATEs) with \code{\link{ensemble}} using
-#' the DR-learner (Kennedy, 2020) and the normalized DR-learner (Knaus, 2020).
+#' This function produces out-of-sample predictions of conditional average treatment effects (CATEs) for
+#' all individuals in the sample using the DR-learner (Kennedy, 2020) and the normalized DR-learner (Knaus, 2020).
+#' The involved predictions are based on \code{\link{ensemble}}. See algorithms 1 and 2 in Knaus (2020) for details.
 #'
 #' @param y Numerical vector containing the outcome variable.
 #' @param w Treatment vector. Provide as factor to control ordering of the treatments,
@@ -17,14 +18,14 @@
 #' Methods can be created by \code{\link{create_method}}. Default is an untuned honest
 #' \code{\link{regression_forest}}.
 #' @param compare_all Relevant multiple treatments: If FALSE, only comparisons to first treatment considered.
-#' @param xnew Covariate matrix of test sample
-#' @param nfolds Number of folds used in cross-validation of ensemble weights (default \code{nfolds=5})
-#' @param path Optional path to save the \code{\link{ensemble}} objects for later processing.
-#' IATE objects saved in new subfolder Comparisonij where i is the index of the control and j of the treated group.
+#' @param nfolds Number of folds used in cross-validation of ensemble weights (default \code{nfolds=5}).
+#' @param path Optional path to save the \code{\link{ensemble}} objects used to predict nuisance parameters and CATEs
+#' for later processing. Outputs of each fold i saved in new subfolder NDR_foldi.
 #' @param quiet If FALSE, ensemble estimators print method that is currently running.
 #'
-#' @return Returns n x 2 matrix containing DR- and NDR-learner predictions in case of one comparison or
-#' a list n x 2 matrices with the specified comparisons.
+#' @return  \item{cates}{Returns n x 2 matrix containing DR- and NDR-learner predictions in case of a binary treatment or
+#' a number of comparisons x n x 2 array with the predictions.}
+#'          \item{list}{A list of the four \code{\link{ndr_oos}} outputs.}
 #'
 #' @references
 #' \itemize{
@@ -33,7 +34,6 @@
 #' \item Knaus, M. C. (2020). Double machine learning based program evaluation under unconfoundedness.
 #'   arXiv preprint arXiv:2003.03191.\url{http://arxiv.org/abs/2003.03191}
 #' }
-
 #'
 #' @export
 #'
@@ -41,56 +41,140 @@ ndr_learner = function(y,w,x,
                        ml_w = list(create_method("forest_grf")),
                        ml_y = list(create_method("forest_grf")),
                        ml_tau = list(create_method("forest_grf")),
-                       xnew=NULL,
                        compare_all = TRUE,
                        nfolds=5,
                        path=NULL,
                        quiet=TRUE) {
-  # Predict in sample if no out-of-sample x provided
-  if (is.null(xnew)) xnew = x
+  # Create indicator matrix
+  wm = prep_w_mat(w)
 
+  # Split sample in four folds
+  cfm = prep_cf_mat(length(y),4)
+
+  # How many comparisons are specified?
+  if (isTRUE(compare_all)) num_comp = ncol(wm)*(ncol(wm)-1)/2
+  else num_comp = ncol(wm)-1
+
+  # Initialize vectors to store results
+  list_ndr_oos = vector("list",4)
+  cates = array(NA,c(num_comp,nrow(x),2))
+
+  # Loop over four folds
+  for (i in 1:4) {
+    if (isFALSE(quiet)) print(paste("NDR-learner fold", toString(i)))
+    oos = cfm[,i]
+    if (!is.null(path)) {
+      dir.create(paste0(path,"/NDR_fold",toString(i)))
+      path_temp = paste0(path,"/NDR_fold",toString(i),"/")
+    }
+    list_ndr_oos[[i]] = ndr_oos(y[!oos],w[!oos],x[!oos,],ml_w = ml_w,
+                                        ml_y = ml_y,ml_tau = ml_tau,
+                                        cf_mat = cfm[!oos,-i],compare_all = FALSE,xnew=x[oos,],
+                                        path=path_temp,quiet=FALSE)
+    for (j in 1:num_comp) {
+      cates[j,oos,] = list_ndr_oos[[i]]$cates[[j]]
+    }
+  }
+  if (ncol(wm) == 1) cates = cates[[1]]
+
+  list("cates"=cates,"list"=list_ndr_oos)
+}
+
+
+#' This function produces out-of-sample predictions of conditional average treatment effects (CATEs) using the
+#' DR-learner (Kennedy, 2020) and the normalized DR-learner (Knaus, 2020).
+#' It executes steps 1 to 4 of algorithms 1 and 2 in Knaus (2020) as part of the \code{\link{ndr_learner}}.
+#'
+#' @param y Numerical vector containing the outcome variable.
+#' @param w Treatment vector. Provide as factor to control ordering of the treatments,
+#' otherwise program orders treatments in ascending order or alphabetically.
+#' @param x Covariate matrix.
+#' @param xnew Covariate matrix of test sample.
+#' @param ml_w List of methods to be used in ensemble estimation of propensity score.
+#' Methods can be created by \code{\link{create_method}}. Default is an untuned honest
+#' \code{\link{regression_forest}}.
+#' @param ml_y List of methods to be used in ensemble estimation of outcome regression.
+#' Methods can be created by \code{\link{create_method}}. Default is an untuned honest
+#' \code{\link{regression_forest}}.
+#' @param ml_tau List of methods to be used in ensemble estimation of CATEs.
+#' Methods can be created by \code{\link{create_method}}. Default is an untuned honest
+#' \code{\link{regression_forest}}.
+#' @param cf_mat Optional logical matrix with k columns of indicators representing the different folds
+#' (for example created by \code{\link{prep_cf_mat}}). Otherwise created internally.
+#' @param compare_all Relevant multiple treatments: If FALSE, only comparisons to first treatment considered.
+#' @param nfolds Number of folds used in cross-validation of ensemble weights (default \code{nfolds=5}).
+#' @param path Optional path to save the \code{\link{ensemble}} objects for later processing.
+#' IATE objects saved in new subfolder Comparisonij where i is the index of the control and j of the treated group.
+#' @param quiet If FALSE, ensemble estimators print method that is currently running.
+#'
+#' @return  \item{cates}{n x 2 matrix containing DR- and NDR-learner predictions in case of a binary treatment or
+#' a list of n x 2 matrices with the specified comparisons.}
+#'          \item{APO}{\code{\link{APO_dml}} object containing the underlying nuisance parameters etc.}
+#'          \item{ATE}{\code{\link{ATE_dml}} object containing the underlying doubly robust score.}
+#'
+#' @references
+#' \itemize{
+#' \item Kennedy, E. H. (2020). Optimal doubly robust estimation of heterogeneous causal effects.
+#' arXiv preprint arXiv:2004.14497. \url{http://arxiv.org/abs/2004.14497}
+#' \item Knaus, M. C. (2020). Double machine learning based program evaluation under unconfoundedness.
+#'   arXiv preprint arXiv:2003.03191.\url{http://arxiv.org/abs/2003.03191}
+#' }
+#'
+#' @export
+#'
+ndr_oos = function(y,w,x,xnew,
+                       ml_w = list(create_method("forest_grf")),
+                       ml_y = list(create_method("forest_grf")),
+                       ml_tau = list(create_method("forest_grf")),
+                       cf_mat = NULL,
+                       compare_all = TRUE,
+                       nfolds=5,
+                       path=NULL,
+                       quiet=TRUE) {
   # Create indicator matrices
-  cfm = prep_cf_mat(length(y),3)
+  if (is.null(cf_mat)) cf_mat = prep_cf_mat(length(y),3)
   wm = prep_w_mat(w)
 
   # Estimate nuisance parameters
-  em = nuisance_dss_e(ml_w,wm,x,cfm,cv=nfolds,path=path,quiet=quiet)
-  mm = nuisance_dss_m(ml_y,y,wm,x,cfm,cv=nfolds,weights=FALSE,path=path,quiet=quiet)
+  if (isFALSE(quiet)) print("Propensity score")
+  em = nuisance_dss_e(ml_w,wm,x,cf_mat,cv=nfolds,path=path,quiet=quiet)
+  if (isFALSE(quiet)) print("Outcome nuisance")
+  mm = nuisance_dss_m(ml_y,y,wm,x,cf_mat,cv=nfolds,weights=FALSE,path=path,quiet=quiet)
 
   # Get the DR scores
-  APO = APO_dml(y,mm,wm,em,cfm)
+  APO = APO_dml(y,mm,wm,em,cf_mat)
   ATE = ATE_dml(APO)
 
   # Initialize to store results
   cates = NULL
 
   # Loop over scores and run DR- and NDR-learner
+  if (isFALSE(quiet)) print("(N)DR-learner")
   pos = 1
   for (i in 1:(ncol(APO$w_mat)-1)) {
     loc = i+1
     if (isFALSE(compare_all) & i > 1) break
     for (j in loc:(ncol(APO$w_mat))) {
+      if (isFALSE(quiet)) print(paste("(N)DR-learner for comparison",toString(i),"and",toString(j)))
       delta = APO$gamma[,j] - APO$gamma[,i]
       if (!is.null(path)) {
-        dir.create(paste0(path,"Comparison",toString(i),toString(j)))
-        path_temp = paste0(path,"/Comparison",toString(i),toString(j))
+        dir.create(paste0(path,"/Comparison",toString(i),toString(j)))
+        path_temp = paste0(path,"/Comparison",toString(i),toString(j),"/")
       }
-      cates[[pos]] = ndr_learner_cate(ml_tau,delta,y,x,APO$w_mat[,c(i,j)],APO$m_mat[,c(i,j)],
-                         APO$e_mat[,c(i,j)],cfm,xnew=xnew)
+      cates[[pos]] = ndr_core(ml_tau,delta,y,x,APO$w_mat[,c(i,j)],APO$m_mat[,c(i,j)],
+                         APO$e_mat[,c(i,j)],cf_mat,xnew=xnew,nfolds=nfolds,path=path_temp,quiet=quiet)
       pos = pos+1
     }
   }
   if (isFALSE(compare_all)) names(cates) = colnames(ATE$delta)[1:length(cates)]
   if (isTRUE(compare_all)) names(cates) = colnames(ATE$delta)
+  if (ncol(APO$w_mat) == 1) cates = cates[[1]]
 
   list("cates"=cates,"APO"=APO,"ATE"=ATE)
 }
 
 
-#' DR- and NDR-learner.
-#'
-#' This function predicts conditional average treatment effects (CATEs) with \code{\link{ensemble}} using
-#' the DR-learner and the normalized DR-learner for a single comparison with provided nuisance parameters.
+#' Core function of \code{\link{ndr_learner}}. It executes steps 2 and 4 of algorithms 1 and 2 in Knaus (2020).
 #'
 #' @param ml List of methods to be used in \code{\link{ensemble}} estimation.
 #' Methods can be created by \code{\link{create_method}}.
@@ -110,9 +194,15 @@ ndr_learner = function(y,w,x,
 #'
 #' @return \code{np_grf} returns the grf object(s) and a n x 1 matrix of nuisance parameters
 #'
+#' @references
+#' \itemize{
+#' \item Knaus, M. C. (2020). Double machine learning based program evaluation under unconfoundedness.
+#'   arXiv preprint arXiv:2003.03191.\url{http://arxiv.org/abs/2003.03191}
+#' }
+#'
 #' @export
 #'
-ndr_learner_cate = function(ml,delta,y,x,w_mat,m_mat,e_mat,cf_mat,
+ndr_core = function(ml,delta,y,x,w_mat,m_mat,e_mat,cf_mat,
                       xnew=NULL,
                       nfolds=5,
                       path=NULL,

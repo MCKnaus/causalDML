@@ -12,7 +12,7 @@ ols_fit(x, y)
 \item{y}{Vector of outcomes of training sample}
 }
 \value{
-Returns oOLS coefficients
+Returns OLS coefficients
 }
 \description{
 Calculates OLS fit.
