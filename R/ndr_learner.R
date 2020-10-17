@@ -71,12 +71,12 @@ ndr_learner = function(y,w,x,
     list_ndr_oos[[i]] = ndr_oos(y[!oos],w[!oos],x[!oos,],ml_w = ml_w,
                                         ml_y = ml_y,ml_tau = ml_tau,
                                         cf_mat = cfm[!oos,-i],compare_all = compare_all,xnew=x[oos,],
-                                        path=path,quiet=FALSE)
+                                        path=path,quiet=quiet)
     for (j in 1:num_comp) {
       cates[j,oos,] = list_ndr_oos[[i]]$cates[[j]]
     }
   }
-  if (ncol(wm) == 1) cates = cates[[1]]
+  if (ncol(wm) == 2) cates = cates[[1]]
 
   list("cates"=cates,"list"=list_ndr_oos)
 }
@@ -170,7 +170,7 @@ ndr_oos = function(y,w,x,xnew,
   }
   if (isFALSE(compare_all)) names(cates) = colnames(ATE$delta)[1:length(cates)]
   if (isTRUE(compare_all)) names(cates) = colnames(ATE$delta)
-  if (ncol(APO$w_mat) == 1) cates = cates[[1]]
+  if (ncol(APO$w_mat) == 2) cates = cates[[1]]
 
   list("cates"=cates,"APO"=APO,"ATE"=ATE)
 }

@@ -61,7 +61,7 @@ prep_cf_mat = function(n,cf,cl=NULL) {
 #' @param q Number of splits (defaut 5).
 #'
 #' @importFrom dplyr ntile
-#' @import matrixStats
+#' @import Matrix
 #'
 #' @return Matrix containing means of covariate in each group.
 #'
@@ -73,7 +73,7 @@ clan = function(cate,x,q=5) {
   res = matrix(NA,ncol(x),q)
   rownames(res) = colnames(x)
   for (i in 1:q) {
-    res[,i] = colMeans(x[qt==i,])
+    res[,i] = colMeans(x[qt==i,],na.rm=TRUE)
   }
   return(res)
 }
