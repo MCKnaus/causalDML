@@ -9,7 +9,7 @@ library(devtools)
 install_github(repo="MCKnaus/causalDML")
 ```
 
-The following code creates synthetic data to showcase a comprehensive analysis based in the package:
+The following code creates synthetic data to showcase a comprehensive analysis based on the package:
 
 ```R
 library(causalDML)
