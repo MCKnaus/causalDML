@@ -2,9 +2,7 @@
 % Please edit documentation in R/ndr_learner.R
 \name{ndr_oos}
 \alias{ndr_oos}
-\title{This function produces out-of-sample predictions of conditional average treatment effects (CATEs) using the
-DR-learner (Kennedy, 2020) and the normalized DR-learner (Knaus, 2020).
-It executes steps 1 to 4 of algorithms 1 and 2 in Knaus (2020) as part of the \code{\link{ndr_learner}}.}
+\title{Out-of-sample prediction with DR- and NDR-learner}
 \usage{
 ndr_oos(
   y,

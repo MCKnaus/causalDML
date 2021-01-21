@@ -50,6 +50,7 @@ for later processing. Outputs of each fold i saved in new subfolder NDR_foldi.}
 \item{cates}{Returns n x 2 matrix containing DR- and NDR-learner predictions in case of a binary treatment or
 a number of comparisons x n x 2 array with the predictions.}
          \item{list}{A list of the four \code{\link{ndr_oos}} outputs.}
+         \item{cf_mat}{Matrix with k columns of indicators representing the different folds used in estimation.}
 }
 \description{
 This function produces out-of-sample predictions of conditional average treatment effects (CATEs) for

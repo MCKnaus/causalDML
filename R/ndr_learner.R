@@ -26,6 +26,7 @@
 #' @return  \item{cates}{Returns n x 2 matrix containing DR- and NDR-learner predictions in case of a binary treatment or
 #' a number of comparisons x n x 2 array with the predictions.}
 #'          \item{list}{A list of the four \code{\link{ndr_oos}} outputs.}
+#'          \item{cf_mat}{Matrix with k columns of indicators representing the different folds used in estimation.}
 #'
 #' @references
 #' \itemize{
@@ -76,12 +77,14 @@ ndr_learner = function(y,w,x,
       cates[j,oos,] = list_ndr_oos[[i]]$cates[[j]]
     }
   }
-  if (ncol(wm) == 2) cates = cates[[1]]
+  if (ncol(wm) == 2) cates = cates[1,,]
 
-  list("cates"=cates,"list"=list_ndr_oos)
+  list("cates"=cates,"list"=list_ndr_oos,"cf_mat"=cfm)
 }
 
 
+#' Out-of-sample prediction with DR- and NDR-learner
+#'
 #' This function produces out-of-sample predictions of conditional average treatment effects (CATEs) using the
 #' DR-learner (Kennedy, 2020) and the normalized DR-learner (Knaus, 2020).
 #' It executes steps 1 to 4 of algorithms 1 and 2 in Knaus (2020) as part of the \code{\link{ndr_learner}}.
