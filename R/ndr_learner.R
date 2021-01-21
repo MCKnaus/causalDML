@@ -74,7 +74,8 @@ ndr_learner = function(y,w,x,
                                         cf_mat = cfm[!oos,-i],compare_all = compare_all,xnew=x[oos,],
                                         path=path,quiet=quiet)
     for (j in 1:num_comp) {
-      cates[j,oos,] = list_ndr_oos[[i]]$cates[[j]]
+      if (ncol(wm) == 2) cates[j,oos,] = list_ndr_oos[[i]]$cates
+      else cates[j,oos,] = list_ndr_oos[[i]]$cates[[j]]
     }
   }
   if (ncol(wm) == 2) cates = cates[1,,]
