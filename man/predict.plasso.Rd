@@ -4,9 +4,11 @@
 \alias{predict.plasso}
 \title{Predict after Post-Lasso.}
 \usage{
-\method{predict}{plasso}(object, xnew = NULL, se_rule = 0, weights = FALSE)
+\method{predict}{plasso}(plasso, xnew = NULL, se_rule = 0, weights = FALSE)
 }
 \arguments{
+\item{plasso}{\code{\link{plasso}} object}
+
 \item{xnew}{Matrix of new values for x at which predictions are to be made}
 
 \item{se_rule}{If equal to zero predictions from CV minimum (default). Negative values go in the direction of smaller
@@ -14,8 +16,6 @@ models (e.g. se_rule=-1 creates the standard 1SE rule), positive values go in th
 (e.g. se_rule=1 creates the standard 1SE+ rule)}
 
 \item{weights}{If TRUE, weights underlying the prediction for xnew calculated}
-
-\item{plasso}{\code{\link{plasso}} object}
 
 \item{x}{Covariate matrix that was used for training}
 

@@ -103,7 +103,7 @@ plasso = function(x,y,
 #'
 #' @export
 #'
-predict.plasso = function(object,
+predict.plasso = function(plasso,
                           xnew=NULL,
                           se_rule=0,
                           weights=FALSE) {
