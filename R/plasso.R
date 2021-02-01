@@ -101,13 +101,13 @@ plasso = function(x,y,
 #'
 #' @export
 #'
-predict.plasso = function(plasso,x,y,
+predict.plasso = function(object,
                           xnew=NULL,
                           se_rule=0,
                           weights=FALSE) {
 
-  if (is.null(xnew)) xnew = x
-  x = add_intercept(x)
+  if (is.null(xnew)) xnew = plasso$x
+  x = add_intercept(plasso$x)
   xnew = add_intercept(xnew)
 
   # Standard error of folds
@@ -128,7 +128,7 @@ predict.plasso = function(plasso,x,y,
   xact = x[,nm_act]
   xactnew = xnew[,nm_act]
   hat_mat = xactnew %*% solve(crossprod(xact)) %*% t(xact)
-  fit_plasso = hat_mat %*% y
+  fit_plasso = hat_mat %*% plasso$y
   if (weights==FALSE) hat_mat = NULL
 
   list("lasso"=fit_lasso,"plasso"=fit_plasso,"weights"=hat_mat)
