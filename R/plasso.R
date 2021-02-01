@@ -19,6 +19,8 @@ plasso = function(x,y,
 
   # Handle potentially provided sample weights, otherwise create weight vector of ones
   w = handle_weights(w,nrow(x))
+  # Create variable names if not provided
+  if ( is.null( colnames(x) ) ) colnames(x) = sprintf("var%s",seq(1:ncol(x)))
 
   # Lasso with full estimation sample
   lasso_full = glmnet(x,y,weights = as.vector(w),family="gaussian",...)
