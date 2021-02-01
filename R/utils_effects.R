@@ -61,7 +61,6 @@ prep_cf_mat = function(n,cf,cl=NULL) {
 #' @param q Number of splits (defaut 5).
 #'
 #' @importFrom dplyr ntile
-#' @import Matrix
 #'
 #' @return Matrix containing means of covariate in each group.
 #'

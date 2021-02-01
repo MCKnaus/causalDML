@@ -4,7 +4,7 @@
 \alias{summary.ATE_dml}
 \title{\code{summary} method for class \code{\link{ATE_dml}}}
 \usage{
-summary.ATE_dml(ATE_dml, ...)
+\method{summary}{ATE_dml}(ATE_dml, ...)
 }
 \arguments{
 \item{ATE_dml}{Object of class \code{\link{ATE_dml}}.}

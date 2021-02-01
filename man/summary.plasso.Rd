@@ -4,7 +4,7 @@
 \alias{summary.plasso}
 \title{Summary of Post-Lasso model}
 \usage{
-summary.plasso(plasso)
+\method{summary}{plasso}(plasso)
 }
 \arguments{
 \item{plasso}{\code{\link{plasso}} object}
