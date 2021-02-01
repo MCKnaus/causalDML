@@ -16,10 +16,6 @@ models (e.g. se_rule=-1 creates the standard 1SE rule), positive values go in th
 (e.g. se_rule=1 creates the standard 1SE+ rule)}
 
 \item{weights}{If TRUE, weights underlying the prediction for xnew calculated}
-
-\item{x}{Covariate matrix that was used for training}
-
-\item{y}{Outcomes that were used for training}
 }
 \description{
 Predict after Post-Lasso.

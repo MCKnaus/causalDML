@@ -93,8 +93,6 @@ plasso = function(x,y,
 #' Predict after Post-Lasso.
 #'
 #' @param plasso \code{\link{plasso}} object
-#' @param x Covariate matrix that was used for training
-#' @param y Outcomes that were used for training
 #' @param xnew Matrix of new values for x at which predictions are to be made
 #' @param se_rule If equal to zero predictions from CV minimum (default). Negative values go in the direction of smaller
 #' models (e.g. se_rule=-1 creates the standard 1SE rule), positive values go in the direction of larger models
@@ -110,6 +108,8 @@ predict.plasso = function(plasso,
 
   if (is.null(xnew)) xnew = plasso$x
   x = add_intercept(plasso$x)
+  # Create variable names if not provided
+  if ( is.null( colnames(xnew) ) ) colnames(xnew) = sprintf("var%s",seq(1:ncol(xnew)))
   xnew = add_intercept(xnew)
 
   # Standard error of folds
