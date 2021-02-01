@@ -25,4 +25,3 @@ List with the names of selected variables at cross-validated minima for Lasso an
 This function uses the \code{\link{glmnet}} package to estimate the coefficient paths
 and cross-validates least squares Lasso AND Post-Lasso
 }
-\keyword{internal}

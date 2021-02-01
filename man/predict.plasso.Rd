@@ -24,4 +24,3 @@ models (e.g. se_rule=-1 creates the standard 1SE rule), positive values go in th
 \description{
 Predict after Post-Lasso.
 }
-\keyword{internal}

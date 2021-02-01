@@ -12,4 +12,3 @@
 \description{
 Plot of cross-validation curves.
 }
-\keyword{internal}

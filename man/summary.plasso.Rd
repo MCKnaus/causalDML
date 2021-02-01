@@ -15,4 +15,3 @@ Prints cross-validated MSE and active variables for Lasso and Post-Lasso.
 \description{
 Summary of Post-Lasso model
 }
-\keyword{internal}

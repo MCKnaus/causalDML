@@ -10,8 +10,6 @@
 #'
 #' @return List with the names of selected variables at cross-validated minima for Lasso and Post-Lasso
 #'
-#' @keywords internal
-#'
 plasso = function(x,y,
                   w=NULL,
                   kf = 10,
@@ -98,8 +96,6 @@ plasso = function(x,y,
 #' (e.g. se_rule=1 creates the standard 1SE+ rule)
 #' @param weights If TRUE, weights underlying the prediction for xnew calculated
 #'
-#' @keywords internal
-#'
 predict.plasso = function(plasso,x,y,
                           xnew=NULL,
                           se_rule=0,
@@ -140,8 +136,6 @@ predict.plasso = function(plasso,x,y,
 #'
 #' @return Prints cross-validated MSE and active variables for Lasso and Post-Lasso.
 #'
-#' @keywords internal
-#'
 summary.plasso = function(plasso) {
   # Comparison of minimum MSE
   cat("\n\n Minimum CV MSE Lasso:",toString(min(plasso$mean_MSE_lasso,na.rm = TRUE)))
@@ -159,8 +153,6 @@ summary.plasso = function(plasso) {
 #' Plot of cross-validation curves.
 #'
 #' @param plasso \code{\link{plasso}} object
-#'
-#' @keywords internal
 #'
 plot.plasso = function(plasso) {
 
