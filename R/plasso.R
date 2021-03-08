@@ -213,7 +213,6 @@ plot.plasso = function(plasso) {
 
 
 #' This function contains the core parts of the CV for Lasso and Post-Lasso
-
 #' @param x covariate matrix to be used in CV
 #' @param y vector of outcomes
 #' @param w vector of weight
@@ -227,7 +226,6 @@ plot.plasso = function(plasso) {
 #'
 #' @keywords internal
 #'
-
 CV_core = function(x,y,w,cvgroup,list,i,lambda,...) {
 
   # Get estimation and prediction sample for this specific fold
@@ -364,7 +362,6 @@ CV_core = function(x,y,w,cvgroup,list,i,lambda,...) {
 #'
 #' @keywords internal
 #'
-
 fitted_values = function (XtX_all,Xty_all,x_pred,nm_act) {
 
   # Extract relevant rows and columns
@@ -391,7 +388,6 @@ fitted_values = function (XtX_all,Xty_all,x_pred,nm_act) {
 #'
 #' @keywords internal
 #'
-
 norm_w_to_n = function(w,d=NULL) {
 
   if (is.null(d)) {
@@ -476,4 +472,3 @@ handle_weights = function(w,n) {
   w <- norm_w_to_n(w)
   return(w)
 }
-
