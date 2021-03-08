@@ -369,16 +369,23 @@ DML_partial_linear = function(y,w,x,
   if (is.null(cf_mat)) cfm = prep_cf_mat(length(y),cf)
   else cfm = cf_mat
 
+  # Manage paths
+  path_w = path_y = NULL
+  if (!is.null(path)) {
+    path_w = paste0(path,"W_")
+    path_y = paste0(path,"Y_")
+  }
+
   # Estimate treatment model
   n = length(y)
   if(is.null(e_hat)) ex = nuisance_m(ml_w,w,matrix(T,nrow=n,ncol=1),x,cfm,cv=cv,
-                                     path=paste0(path,"W_"),quiet=quiet)
+                                     path=path_w,quiet=quiet)
   else ex = e_hat
   v = w - ex
 
   # Estimate outcomes
   if(is.null(m_hat)) mx = nuisance_m(ml_y,y,matrix(T,nrow=n,ncol=1),x,cfm,cv=cv,weights=weights,
-                                     path=paste0(path,"Y_"),quiet=quiet)
+                                     path=path_y,quiet=quiet)
   else mx = m_hat
   u = y - mx
 
