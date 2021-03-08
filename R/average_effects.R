@@ -307,3 +307,103 @@ plot.APO_dml = function(APO_dml,label = NULL,sl=0.05) {
                                               axis.title.x=element_blank())
   return(g)
 }
+
+
+
+#' Double Machine Learning estimation of partially lienar model
+#'
+#' This function estimates the parameter of interest in a partially linear model
+#' using the residual-on-residual representation of Robinson (1988)
+#' and flexibly estimated nuisance parameters following Chernozukov et al. (2018).
+#'
+#' @param y Numeric vector containing the outcome variable.
+#' @param w Treatment vector (binary or continuous).
+#' @param x Covariate matrix.
+#' @param ml_w List of methods to be used in ensemble estimation of treatment regression.
+#' Methods can be created by \code{\link{create_method}}. Default is an untuned honest
+#' \code{\link{regression_forest}}.
+#' @param ml_y List of methods to be used in ensemble estimation of outcome regression.
+#' Methods can be created by \code{\link{create_method}}. Default is an untuned honest
+#' \code{\link{regression_forest}}.
+#' @param cf Number of cross-fitting folds for DML (default 5).
+#' @param cv Number of cross-validation folds when estimating ensemble if more than one method is defined
+#' in \code{ml_w} and/or \code{ml_y} (default 5).
+#' @param weights If TRUE, prediction weights of the outcome nuisance extracted and saved (requires to provide a path).
+#' @param path Optional path to save the \code{\link{ensemble}} objects of each cross-fit for later inspection.
+#' @param quiet If FALSE, ensemble estimators print method that is currently running.
+#' @param e_hat Optional vector of predicted treatment outside of the function.
+#' @param m_hat Optional vector of predicted outcome outside of the function.
+#' @param cf_mat Optional prespecified logical matrix with k columns of indicators representing the different folds
+#' (for example created by \code{\link{prep_cf_mat}}).
+#'
+#' @return Returns a \code{DML_partial_linear} object:
+#'          \item{results}{Point estimate, standard error, t- and p-value of estimated effect.}
+#'          \item{e_hat}{Predicted treatment}
+#'          \item{m_hat}{Predicted outcomes}
+#'          \item{w}{Treatment vector used in estimation.}
+#'          \item{y}{Vector of outcomes used in estimation.}
+#'          \item{cf_mat}{Matrix with k columns of indicators representing the different folds used in estimation.}
+#'          \item{path}{Path where results are stored if specified, otherwise NULL.}
+#'
+#' @references
+#' \itemize{
+#' \item Robinson, P. M. (1988). Root-N-consistent semiparametric regression. Econometrica, 931-954.
+#' \item Chernozhukov, V., Chetverikov, D., Demirer, M., Duflo, E., Hansen, C., Newey, W., & Robins, J. (2018).
+#' Double/Debiased machine learning for treatment and structuralparameters.The Econometrics Journal,21(1), C1-C68
+#' }
+#'
+#' @export
+#'
+DML_partial_linear = function(y,w,x,
+                              ml_w = list(create_method("forest_grf")),
+                              ml_y = list(create_method("forest_grf")),
+                              cf=5,
+                              cv=5,
+                              weights=FALSE,
+                              path=NULL,
+                              quiet=TRUE,
+                              e_hat=NULL,
+                              m_hat=NULL,
+                              cf_mat=NULL) {
+  # Get important matrices
+  if (is.null(cf_mat)) cfm = prep_cf_mat(length(y),cf)
+  else cfm = cf_mat
+
+  # Estimate treatment model
+  n = length(y)
+  if(is.null(e_hat)) ex = nuisance_m(ml_w,w,matrix(T,nrow=n,ncol=1),x,cfm,cv=cv,
+                                     path=paste0(path,"W_"),quiet=quiet)
+  else ex = e_hat
+  v = w - ex
+
+  # Estimate outcomes
+  if(is.null(m_hat)) mx = nuisance_m(ml_y,y,matrix(T,nrow=n,ncol=1),x,cfm,cv=cv,weights=weights,
+                                     path=paste0(path,"Y_"),quiet=quiet)
+  else mx = m_hat
+  u = y - mx
+
+  # Results
+  res = matrix(NA,1,4)
+  colnames(res) = c("Coefficient","SE","t","p")
+  pl = lm(u ~ 0 + v)
+  res[,1] = coef(pl)
+  res[,2] = sqrt((1/sum(v^2))^2 * sum((v*pl$residuals)^2))
+  res[,3] = res[,1] / res[,2]
+  res[,4] = 2 * stats::pt(abs(res[,3]),n,lower = FALSE)
+
+  output = list("result"=res,"e_hat"=ex,"m_hat"=mx,"w"=w,"y"=w,"cf_mat"=cfm,"path"=path)
+  class(output) = "DML_partial_linear"
+  output
+}
+
+
+#' \code{summary} method for class \code{\link{DML_partial_linear}}
+#'
+#' @param DML_partial_linear Object of class \code{\link{DML_partial_linear}}.
+#' @param ... further arguments passed to \code{printCoefmat}
+#'
+#' @export
+#'
+summary.DML_partial_linear = function(DML_partial_linear,...) {
+  printCoefmat(DML_partial_linear$result,has.Pvalue = TRUE)
+}
