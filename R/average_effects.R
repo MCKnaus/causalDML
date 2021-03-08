@@ -56,6 +56,76 @@ causalDML = function(y,w,x,
 }
 
 
+#' This function estimates the average potential outcomes and average treatment
+#' effects using Double Machine Learning (DML).
+#'
+#' More recent version of \code{\link{causalDML}} with more functions and especially
+#' a more precise function name.
+#'
+#' @param y Numeric vector containing the outcome variable.
+#' @param w Treatment vector. Provide as factor to control ordering of the treatments,
+#' otherwise program orders treatments in ascending order or alphabetically.
+#' @param x Covariate matrix.
+#' @param ml_w List of methods to be used in ensemble estimation of propensity score.
+#' Methods can be created by \code{\link{create_method}}. Default is an untuned honest
+#' \code{\link{regression_forest}}.
+#' @param ml_y List of methods to be used in ensemble estimation of outcome regression.
+#' Methods can be created by \code{\link{create_method}}. Default is an untuned honest
+#' \code{\link{regression_forest}}.
+#' @param cf Number of cross-fitting folds for DML (default 5).
+#' @param cv Number of cross-validation folds when estimating ensemble if more than one method is defined
+#' in \code{ml_w} and/or \code{ml_y} (default 5).
+#' @param cl If not NULL, vector with cluster variables
+#' @param norm Controls normalization of IPW weights. 0: no normalization, 1: overall normalization,
+#' 2: normalization in each cross-fitting fold separately (default).
+#' @param weights If TRUE, prediction weights of the outcome nuisance extracted and saved (requires to provide a path).
+#' @param path Optional path to save the \code{\link{ensemble}} objects of each cross-fit for later inspection.
+#' @param quiet If FALSE, ensemble estimators print method that is currently running.
+#' @param e_mat Optional n x T+1 matrix with propensity scores calculated outside of function.
+#' @param m_mat Optional n x T+1 matrix fitted outcome values calculated outside of function.
+#' @param cf_mat Optional prespecified logical matrix with k columns of indicators representing the different folds
+#' (for example created by \code{\link{prep_cf_mat}}).
+#'
+#' @return List of an \code{\link{APO_dml}} and an \code{\link{ATE_dml}} object.
+#'
+#' @export
+#'
+DML_aipw = function(y,w,x,
+                     ml_w = list(create_method("forest_grf")),
+                     ml_y = list(create_method("forest_grf")),
+                     cf=5,
+                     cv=5,
+                     cl=NULL,
+                     norm=2,
+                     weights=FALSE,
+                     path = NULL,
+                     quiet=TRUE,
+                     e_mat=NULL,
+                     m_mat=NULL,
+                     cf_mat=NULL) {
+  # Create important matrices
+  wm = prep_w_mat(w)
+  if (is.null(cf_mat)) cfm = prep_cf_mat(length(y),cf,wm,cl)
+  else cfm = cf_mat
+
+  # Estimate pscore
+  if(is.null(e_mat)) em = nuisance_e(ml_w,wm,x,cfm,cv=cv,path=path,quiet=quiet)
+  else em = e_mat
+
+  # Estimate outcomes
+  if(is.null(m_mat)) mm = nuisance_m(ml_y,y,wm,x,cfm,cv=cv,weights=weights,path=path,quiet=quiet)
+  else mm = m_mat
+
+  # APOs
+  APO = APO_dml(y,mm,wm,em,norm=norm,cf_mat=cfm)
+
+  # ATE
+  ATE = ATE_dml(APO)
+
+  list("APO"=APO,"ATE"=ATE)
+}
+
+
 #' This function estimates the average potential outcomes for all treatment levels.
 #'
 #' @param y A numeric vector containing the outcome variable.
