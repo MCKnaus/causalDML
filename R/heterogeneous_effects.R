@@ -74,6 +74,5 @@ plot.kr_cate = function(kr_cate,
 
   if (!is.null(z_label)) g = g + xlab(z_label)
   if (!is.null(yrange)) g = g +  scale_y_continuous(limits = yrange)
-  print(g)
   return(g)
 }
