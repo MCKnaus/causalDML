@@ -27,6 +27,7 @@
 #'
 kr_cate = function(delta,z,bw_factor=0.9) {
   z = as.data.frame(z)
+  delta = c(delta)
   bwobj = npregbw(ydat = delta, xdat = z, ckertype = 'gaussian', ckerorder = 2, regtype = 'lc', bwmethod = 'cv.ls')
   bws = bwobj$bw
   bw = bwobj$bw * bw_factor
@@ -67,7 +68,7 @@ plot.kr_cate = function(kr_cate,
     geom_line(size = .8) + geom_hline(yintercept=0) +
     geom_ribbon(aes(ymin = selow,max = sehigh),alpha=0.3) +
     theme_bw() + ylab("Conditional average treatment effect") +
-    theme(text=element_text(family="serif",size = 16, colour="black")) +
+    theme(text=element_text(size = 16, colour="black")) +
     theme(plot.title = element_text(hjust = 0.5)) + theme(legend.position = "none") +
     geom_hline(yintercept=kr_cate$ate,linetype = 'dashed')
 
