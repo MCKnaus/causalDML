@@ -48,7 +48,7 @@ for later processing. Outputs of each fold i saved in new subfolder NDR_foldi.}
 }
 \value{
 \item{cates}{Returns n x 2 matrix containing DR- and NDR-learner predictions in case of a binary treatment or
-a number of comparisons x n x 2 array with the predictions.}
+a number of comparisons x n x 2 array in case of multiple treatments.}
          \item{list}{A list of the four \code{\link{ndr_oos}} outputs.}
          \item{cf_mat}{Matrix with k columns of indicators representing the different folds used in estimation.}
 }

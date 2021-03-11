@@ -48,7 +48,7 @@ Saved as Ensemble_Yi where i is the number of the treatment in multiple treatmen
 \item{quiet}{If FALSE, ensemble estimators print method that is currently running.}
 }
 \value{
-\code{np_grf} returns the grf object(s) and a n x 1 matrix of nuisance parameters
+n x 2 matrix containing DR- and NDR-learner predictions.
 }
 \description{
 Core function of \code{\link{ndr_learner}}. It executes steps 2 and 4 of algorithms 1 and 2 in Knaus (2020).

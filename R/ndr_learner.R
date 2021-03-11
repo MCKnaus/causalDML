@@ -24,7 +24,7 @@
 #' @param quiet If FALSE, ensemble estimators print method that is currently running.
 #'
 #' @return  \item{cates}{Returns n x 2 matrix containing DR- and NDR-learner predictions in case of a binary treatment or
-#' a number of comparisons x n x 2 array with the predictions.}
+#' a number of comparisons x n x 2 array in case of multiple treatments.}
 #'          \item{list}{A list of the four \code{\link{ndr_oos}} outputs.}
 #'          \item{cf_mat}{Matrix with k columns of indicators representing the different folds used in estimation.}
 #'
@@ -161,7 +161,7 @@ ndr_oos = function(y,w,x,xnew,
     loc = i+1
     if (isFALSE(compare_all) & i > 1) break
     for (j in loc:(ncol(APO$w_mat))) {
-      if (isFALSE(quiet)) print(paste("(N)DR-learner for comparison",toString(i),"and",toString(j)))
+      if (isFALSE(quiet)) print(paste("(N)DR-learner for comparison",toString(j),"and",toString(i)))
       delta = APO$gamma[,j] - APO$gamma[,i]
       if (!is.null(path)) {
         dir.create(paste0(path_orig,"/Comparison",toString(i),toString(j)))
@@ -198,7 +198,7 @@ ndr_oos = function(y,w,x,xnew,
 #' Saved as Ensemble_Yi where i is the number of the treatment in multiple treatment settings.
 #' @param quiet If FALSE, ensemble estimators print method that is currently running.
 #'
-#' @return \code{np_grf} returns the grf object(s) and a n x 1 matrix of nuisance parameters
+#' @return n x 2 matrix containing DR- and NDR-learner predictions.
 #'
 #' @references
 #' \itemize{
@@ -213,6 +213,12 @@ ndr_core = function(ml,delta,y,x,w_mat,m_mat,e_mat,cf_mat,
                       nfolds=5,
                       path=NULL,
                       quiet=TRUE) {
+  # Stop if linear smoother potentially producing negative weights is used
+  for (i in 1:length(ml)) {
+    if (!(any(ml[[i]]$method == c("mean","forest_grf")))
+    ) warning("Highly recommended to specify only linear smoothers producing non-negative weights (currently c(\"mean\",\"forest_grf\") ).
+              Otherwise normalization can even further increase the weights and lead to more extreme estimates.")
+  }
 
   if (ncol(cf_mat) != 3) stop("Please provide cf_mat with three columns that was used to create
                               the nuisance parameters and delta.")
