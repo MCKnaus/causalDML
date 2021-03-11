@@ -50,7 +50,7 @@ dr_learner = function(y,w,x,
   wm = prep_w_mat(w)
 
   # Split sample in four folds
-  cfm = prep_cf_mat(length(y),4)
+  cfm = prep_cf_mat(length(y),4,wm)
 
   # How many comparisons are specified?
   if (isTRUE(compare_all)) num_comp = ncol(wm)*(ncol(wm)-1)/2
@@ -135,8 +135,8 @@ dr_oos = function(y,w,x,xnew,
                    path=NULL,
                    quiet=TRUE) {
   # Create indicator matrices
-  if (is.null(cf_mat)) cf_mat = prep_cf_mat(length(y),3)
   wm = prep_w_mat(w)
+  if (is.null(cf_mat)) cf_mat = prep_cf_mat(length(y),3,wm)
 
   # Estimate nuisance parameters
   if (isFALSE(quiet)) print("Propensity score")
