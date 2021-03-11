@@ -41,8 +41,8 @@ lasso = create_method("lasso")
 
 ## Run the main function that outputs nuisance parameters, APO and ATE
 # Can take some minutes, set quiet=F to see progress or remove forest to speed up
-DML = causalDML(Y,W,X,ml_w=list(mean,forest,ridge_bin,lasso_bin),
-                      ml_y=list(mean,forest,ols,ridge,lasso),quiet=T)
+DML = DML_aipw(Y,W,X,ml_w=list(mean,forest,ridge_bin,lasso_bin),
+                ml_y=list(mean,forest,ols,ridge,lasso),quiet=T)
 
 ## Show and plot estimated APOs
 summary(DML$APO)
@@ -71,32 +71,43 @@ for (i in 1:3) {
   plot(temp_kr)
 }
 
-## (N)DR-learner for all observations in the sample
+## Plain DR-learner for all observations in the sample
 # Can take some minutes, set quiet=F to see progress or remove forest to speed up
 # Be sure to specify only linear smoothers for tau
+dr = dr_learner(Y,W,X,ml_w=list(mean,lasso_bin),
+                  ml_y = list(mean,lasso),
+                  ml_tau = list(mean,lasso),quiet=T)
+
+# DR-learner distribution of B-A
+hist(dr$cates[,1])
+
+## (N)DR-learner for all observations in the sample
+# Can take some minutes, set quiet=F to see progress or remove forest to speed up
+# Here we only compare B and C to the "baseline" treatment A
 ndr = ndr_learner(Y,W,X,ml_w=list(mean,forest,ridge_bin,lasso_bin),
                   ml_y = list(mean,forest,ols,ridge,lasso),
-                  ml_tau = list(mean,forest,ols,ridge),quiet=T)
+                  ml_tau = list(mean,forest),quiet=T,
+                  compare_all = FALSE)
 
 # Plot DR-learner distribution of B-A
 hist(ndr$cates[1,,1])
 
-# Plot NDR-learner distribution of B-A
-hist(ndr$cates[1,,2])
+# Plot NDR-learner distribution of C-A
+hist(ndr$cates[2,,2])
 
 ## (N)DR-learner for out-of-sample prediction in test set
 # Can take some minutes, set quiet=F to see progress or remove forest to speed up
 # Be sure to specify only linear smoothers for tau
 X_test = matrix(rnorm(n/2 * p), n/2, p)
 ndr.oos = ndr_oos(Y,W,X,xnew=X_test,ml_w=list(mean,forest,ridge_bin,lasso_bin),
-           ml_y = list(mean,forest,ols,ridge,lasso),
-           ml_tau = list(mean,forest,ols,ridge),quiet=T)
+                  ml_y = list(mean,forest,ols,ridge,lasso),
+                  ml_tau = list(mean,forest),quiet=T)
 
 # Plot DR-learner distribution of B-A
 hist(ndr.oos$cates[[1]][,1])
 
-# Plot NDR-learner distribution of B-A
-hist(ndr.oos$cates[[1]][,2])
+# Plot NDR-learner distribution of C-A
+hist(ndr.oos$cates[[2]][,2])
 
 ## Policy tree
 tree1 = policy_tree(X,DML$APO$gamma,depth=1)
