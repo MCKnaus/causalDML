@@ -54,6 +54,8 @@ ensemble = function(ml,
 
     # Calculate weights each method receives
     nnls_weights = nnls::nnls(fit_cv,y)$x
+    # In case of perfectly agreeing predictions nnls provides only zeros
+    if (sum(nnls_weights) == 0) nnls_weights = nnls_weights + 1 / ncol(nnls_weights)
     nnls_weights = nnls_weights / sum(nnls_weights)
 
     # Run all methods on the full sample
