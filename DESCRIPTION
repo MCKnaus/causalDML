@@ -10,6 +10,7 @@ License: GPL-3
 Encoding: UTF-8
 LazyData: true
 Imports: 
+    crs,
     dplyr,
     ggplot2,
     glmnet,

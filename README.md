@@ -68,7 +68,13 @@ for (i in 1:3) {
 # Might also take some minutes
 for (i in 1:3) {
   temp_kr = kr_cate(DML$ATE$delta[,i],X[, 1])
-  plot(temp_kr)
+  print(plot(temp_kr))
+}
+
+## Spline regression CATEs along variable X1
+for (i in 1:3) {
+  temp_sr = spline_cate(DML$ATE$delta[,i],X[, 1])
+  print(plot(temp_sr))
 }
 
 ## Plain DR-learner for all observations in the sample

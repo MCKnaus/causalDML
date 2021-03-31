@@ -21,7 +21,7 @@ factor 0.9 as recommended by Zimmert & Lechner (2019).}
 \item{model}{npqregression object (see\code{\link{npreg}}) of the kernel regression}
 \item{fit}{Fitted values of the kernel regression}
 \item{bw}{Cross-validated bandwidth (not scaled)}
-\item{ate}{Average teratment effect}
+\item{ate}{Average treatment effect}
 }
 \description{
 Estimates non-paramteric CATEs using kernel regression as proposed by Fan et al. (2019)
@@ -29,9 +29,9 @@ and Zimmert & Lechner (2019).
 }
 \references{
 \itemize{
-\item Fan, Q., Hsu, Y.-C., Lieli, R. P., & Zhang, Y. (2019). Estimation of conditional averagetreatment effects with high-dimensional data.
+\item Fan, Q., Hsu, Y.-C., Lieli, R. P., & Zhang, Y. (2019). Estimation of conditional average treatment effects with high-dimensional data.
 arXiv preprint arXiv:1908.02399. \url{http://arxiv.org/abs/1908.02399}
-\item Zimmert, M., & Lechner, M. (2019). Nonparametric estimation of causal heterogeneityunder high-dimensional confounding.
+\item Zimmert, M., & Lechner, M. (2019). Nonparametric estimation of causal heterogeneity under high-dimensional confounding.
 arXiv preprint arXiv:1908.02399. \url{http://arxiv.org/abs/1908.08779}
 }
 }
