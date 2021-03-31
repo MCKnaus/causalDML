@@ -144,7 +144,7 @@ plot.spline_cate = function(spline_cate,
   if (ncol(spline_cate$z) > 1) stop("Currently only supports one heterogeneity variable.")
 
   qt = qt(1-sl / 2,length(spline_cate$fit)-1)
-  df = data.frame(z = spline_cate$z,cate = spline_cate$fit,
+  df = data.frame(z = c(spline_cate$z),cate = spline_cate$fit,
                   selow = spline_cate$fit - qt * spline_cate$se_fit,
                   sehigh = spline_cate$fit + qt * spline_cate$se_fit)
   if (!is.null(xrange)) df = df[df$z >= xrange[1] & df$z <= xrange[2],]
