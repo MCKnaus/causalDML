@@ -6,6 +6,11 @@
 
 using namespace Rcpp;
 
+#ifdef RCPP_USE_GLOBAL_ROSTREAM
+Rcpp::Rostream<true>&  Rcpp::Rcout = Rcpp::Rcpp_cout_get();
+Rcpp::Rostream<false>& Rcpp::Rcerr = Rcpp::Rcpp_cerr_get();
+#endif
+
 // norm_drl_rcpp
 arma::vec norm_drl_rcpp(arma::sp_mat alpha, arma::mat y_mat, arma::colvec y, arma::mat w_mat, arma::mat e_mat);
 RcppExport SEXP _causalDML_norm_drl_rcpp(SEXP alphaSEXP, SEXP y_matSEXP, SEXP ySEXP, SEXP w_matSEXP, SEXP e_matSEXP) {

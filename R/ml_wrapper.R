@@ -238,7 +238,10 @@ predict.forest_grf_fit = function(forest_grf_fit,x,y,xnew=NULL,weights=FALSE) {
 
   fit = predict(forest_grf_fit,newdata=xnew)$prediction
 
-  if (weights==TRUE) w = get_sample_weights(forest_grf_fit,newdata=xnew)
+  if (weights==TRUE) {
+    if (packageVersion("grf") < "2.0.0") w = get_sample_weights(forest_grf_fit,newdata=xnew)
+    else  w = get_forest_weights(forest_grf_fit,newdata=xnew)
+  }
   else w = NULL
 
   list("prediction"=fit,"weights"=w)

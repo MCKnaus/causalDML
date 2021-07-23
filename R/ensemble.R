@@ -45,6 +45,7 @@ ensemble = function(ml,
       x_tr = x[!fold,]
       y_tr = y[!fold]
       x_te = x[fold,]
+
       # Get predictions of all methods for test sample
       fit_cv[fold,] = ensemble_core(ml,x_tr,y_tr,x_te,quiet=quiet)$predictions
     }
