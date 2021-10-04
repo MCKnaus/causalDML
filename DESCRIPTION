@@ -15,6 +15,7 @@ Imports:
     ggplot2,
     glmnet,
     grf,
+    lmtest,
     matrixStats,
     Matrix,
     np,
@@ -23,4 +24,4 @@ Imports:
     sandwich
 #Suggests: 
 LinkingTo: Rcpp, RcppArmadillo
-RoxygenNote: 7.1.1
+RoxygenNote: 7.1.2

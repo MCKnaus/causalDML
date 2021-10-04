@@ -141,6 +141,8 @@ plot.spline_cate = function(spline_cate,
                             xrange=NULL,
                             yrange=NULL,
                             sl=0.05) {
+  z = cate = selow = sehigh = NULL
+
   if (ncol(spline_cate$z) > 1) stop("Currently only supports one heterogeneity variable.")
 
   qt = qt(1-sl / 2,length(spline_cate$fit)-1)
