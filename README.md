@@ -1,7 +1,7 @@
 # causalDML
 This package implements the Double Machine Learning based methods reviewed in [Knaus (2020)](https://arxiv.org/abs/2003.03191) for binary and multiple treatment effect estimation. Further, it implements the [Heiler and Knaus (2021)](https://arxiv.org/abs/2110.01427) decomposition of treatment effects with heterogeneous treatments.
 
-For examples of application check out the [replication notebook for Knaus (2020)](https://mcknaus.github.io/assets/code/Notebook_DML_ALMP_MCK2020.html), [replication notebook 1 for Heiler and Knaus (2021)](https://mcknaus.github.io/assets/code/Replication_NB_smoking.nb.html) and [replication notebook 2 for Heiler and Knaus (2021)](https://mcknaus.github.io/assets/code/Replication_NB_JC.nb.html)
+For examples of applications check out the [replication notebook for Knaus (2020)](https://mcknaus.github.io/assets/code/Notebook_DML_ALMP_MCK2020.html), [replication notebook 1 for Heiler and Knaus (2021)](https://mcknaus.github.io/assets/code/Replication_NB_smoking.nb.html) or  [replication notebook 2 for Heiler and Knaus (2021)](https://mcknaus.github.io/assets/code/Replication_NB_JC.nb.html)
 
 The current version can be installed via devtools:
 
