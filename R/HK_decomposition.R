@@ -24,7 +24,7 @@
 #' \itemize{
 #' \item Heiler, P., Knaus, M. C. (2021). Effect or Treatment Heterogeneity?
 #' Policy Evaluation with Aggregated and Disaggregated Treatments
-#' arXiv preprint arXiv:XXX. \url{http://arxiv.org/abs/XXX}
+#' arXiv preprint arXiv:2110.01427. \url{https://arxiv.org/abs/2110.01427}
 #' }
 #'
 #' @import lmtest
