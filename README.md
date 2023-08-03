@@ -1,3 +1,5 @@
+[![HitCount](https://hits.dwyl.com/MCKnaus/causalDML.svg?style=flat-square)](http://hits.dwyl.com/MCKnaus/causalDML) <!--- Started 3.8.2023 -->
+
 # causalDML
 This package implements the Double Machine Learning based methods reviewed in [Knaus (2022)](https://academic.oup.com/ectj/advance-article/doi/10.1093/ectj/utac015/6596870?guestAccessKey=1c5e58e1-ef2d-4067-b63d-e6f573c359eb) for binary and multiple treatment effect estimation. Further, it implements the [Heiler and Knaus (2021)](https://arxiv.org/abs/2110.01427) decomposition of treatment effects with heterogeneous treatments.
 
