@@ -2,7 +2,7 @@
 % Please edit documentation in R/average_effects.R
 \name{DML_partial_linear}
 \alias{DML_partial_linear}
-\title{Double Machine Learning estimation of partially lienar model}
+\title{Double Machine Learning estimation of partially linear model}
 \usage{
 DML_partial_linear(
   y,
@@ -66,7 +66,7 @@ Returns a \code{DML_partial_linear} object:
 \description{
 This function estimates the parameter of interest in a partially linear model
 using the residual-on-residual representation of Robinson (1988)
-and flexibly estimated nuisance parameters following Chernozukov et al. (2018).
+and flexibly estimated nuisance parameters following Chernozhukov et al. (2018).
 }
 \references{
 \itemize{

@@ -24,4 +24,4 @@ Imports:
     sandwich
 #Suggests: 
 LinkingTo: Rcpp, RcppArmadillo
-RoxygenNote: 7.1.2
+RoxygenNote: 7.3.2

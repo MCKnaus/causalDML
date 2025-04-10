@@ -1,11 +1,11 @@
 #' causalDML: Causal Double Machine Learning
 #'
 #' An implementation of Double Machine Learning based method
-#' as they are discussed by Chernozhukov et al. (2018) and reviewed in Knaus (2020).
-#' It is tailored for program evaluation with potentially multiple treatments estimates
+#' as discussed by Chernozhukov et al. (2018) and reviewed in Knaus (2020).
+#' Tailored for program evaluation with potentially multiple treatments, it estimates
 #' average potential outcomes and average treatment effects.
 #'
-#' @docType package
+#' @keywords internal
 #'
 #' @author Michael C. Knaus
 #'
@@ -23,18 +23,16 @@
 #' # Show average potential outcome estimates
 #' summary(cDML$APO)
 #'
-#' # Show average tretment effect estimates
+#' # Show average treatment effect estimates
 #' summary(cDML$ATE)
 #'
 #' @references
 #' \itemize{
-#' \item Chernozhukov, V., Chetverikov, D., Demirer, M., Duflo, E., Hansen, C., Newey, W., &Robins, J. (2018).
-#' Double/Debiased machine learning for treatment and structuralparameters.The Econometrics Journal,21(1), C1-C68
-#' \item Knaus, M. C. (2020). Double machine learning based program evaluation under unconfoundedness.
-#'   arXiv preprint arXiv:2003.03191.\url{http://arxiv.org/abs/2003.03191}
+#' \item Chernozhukov, V., et al. (2018). Double/Debiased machine learning for treatment and structural parameters.
+#'   *The Econometrics Journal*, 21(1), C1–C68.
+#' \item Knaus, M. C. (2022). Double machine learning based program evaluation under unconfoundedness. 
+#' *The Econometrics Journal*, 25(3). \url{https://doi.org/10.1093/ectj/utac015}
 #' }
 #'
-#' @name causalDML
-#'
 #' @useDynLib causalDML, .registration = TRUE
-NULL
+"_PACKAGE"

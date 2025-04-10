@@ -128,4 +128,4 @@ plot(tree2)
 ## References
 Heiler, P., Knaus, M. C. (2021). Effect or Treatment Heterogeneity? Policy Evaluation with Aggregated and Disaggregated Treatments, [arXiv](https://arxiv.org/abs/2110.01427)
 
-Knaus, M. C. (2022). Double machine learning based program evaluation under unconfoundedness, [*The Econometrics Journal*](https://academic.oup.com/ectj/advance-article/doi/10.1093/ectj/utac015/6596870?guestAccessKey=1c5e58e1-ef2d-4067-b63d-e6f573c359eb), forthcoming, [arXiv](https://arxiv.org/abs/2003.03191)
+Knaus, M. C. (2022). Double machine learning based program evaluation under unconfoundedness, [*The Econometrics Journal*](https://academic.oup.com/ectj/advance-article/doi/10.1093/ectj/utac015/6596870?guestAccessKey=1c5e58e1-ef2d-4067-b63d-e6f573c359eb), [arXiv](https://arxiv.org/abs/2003.03191)
