@@ -744,7 +744,7 @@ print.HK2_decomposition = function(HK2_decomposition) {
 #'
 plot.HK2_decomposition = function(HK2_decomposition, 
                                   decomposition = "adim",
-                                  t_aggregate = c(2,1),
+                                  t_aggregate = c(3,2),
                                   x_aggregate = c(3,2),
                                   levels = F,
                                   pe_digits = 3) {

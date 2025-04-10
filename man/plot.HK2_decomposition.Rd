@@ -7,7 +7,7 @@
 \method{plot}{HK2_decomposition}(
   HK2_decomposition,
   decomposition = "adim",
-  t_aggregate = c(2, 1),
+  t_aggregate = c(3, 2),
   x_aggregate = c(3, 2),
   levels = F,
   pe_digits = 3
