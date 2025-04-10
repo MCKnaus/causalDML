@@ -17,7 +17,7 @@ prep_w_mat = function(w) {
 
   # Create one-hot matrix for each category
   w_mat = model.matrix(~0+w)
-  colnames(w_mat) = gsub("w","",colnames(w_mat))
+  colnames(w_mat) = gsub("^w", "", colnames(w_mat))
   return(w_mat == 1)
 }
 
