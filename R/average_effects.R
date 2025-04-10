@@ -380,11 +380,11 @@ plot.APO_dml = function(APO_dml,label = NULL,sl=0.05) {
 
 
 
-#' Double Machine Learning estimation of partially lienar model
+#' Double Machine Learning estimation of partially linear model
 #'
 #' This function estimates the parameter of interest in a partially linear model
 #' using the residual-on-residual representation of Robinson (1988)
-#' and flexibly estimated nuisance parameters following Chernozukov et al. (2018).
+#' and flexibly estimated nuisance parameters following Chernozhukov et al. (2018).
 #'
 #' @param y Numeric vector containing the outcome variable.
 #' @param w Treatment vector (binary or continuous).
