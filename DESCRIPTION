@@ -1,8 +1,8 @@
 Package: causalDML
 Type: Package
 Title: Causal Double Machine Learning
-Version: 0.1.0
-Date: 2020-08-20
+Version: 0.1.1
+Date: 2025-04-10
 Author: Michael C. Knaus
 Maintainer: Michael C. Knaus <michael.knaus@unisg.ch>
 Description: This code implements various Double Machine Learning based methods to estimate average and heterogeneous causal effects.
