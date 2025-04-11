@@ -38,7 +38,7 @@ HK2_decomposition = function(Y,A,G,
   # Sanity check
   if (!(identical(colnames(e_mat), colnames(m_mat)) &&
         identical(colnames(m_mat), colnames(T_mat)))) {
-    stop("Column names of e_mat, m_mat, and T_mat are not identical. Make sure this is not an issue.")
+    warning("Column names of e_mat, m_mat, and T_mat are not identical. Make sure this is not an issue.")
   }
   
   ### Define crucial ingredients
