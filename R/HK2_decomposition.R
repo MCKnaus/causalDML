@@ -867,8 +867,8 @@ plot.HK2_decomposition = function(HK2_decomposition,
       geom_hline(yintercept = 0) +
       xlab("Estimand") +
       theme(legend.position = "none") +
-      geom_text(aes(x = xlab, y = (start + end + range_values * 0.025) / 2, label = coef), size = 2.75) +
-      geom_text(aes(x = xlab, y = (start + end - range_values * 0.025) / 2, label = pvalue), size = 2.75) +
+      geom_text(aes(x = xlab, y = (start + end + range_values * 0.04) / 2, label = coef), size = 2.75) +
+      geom_text(aes(x = xlab, y = (start + end - range_values * 0.04) / 2, label = pvalue), size = 2.75) +
       facet_wrap(~Group, scales = "free_x")
     
   }
