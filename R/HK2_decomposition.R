@@ -749,7 +749,11 @@ plot.HK2_decomposition = function(HK2_decomposition,
                                   levels = F,
                                   pe_digits = 3) {
   
-  if (decomposition == "dim") selector = c(3,7,8,9,11,1)
+  # Hard-dcode colors obtained from viridis(7,begin = 0.3,alpha=0.9)
+  colors = c("#35608DE6", "#287C8EE6", "#1F988BE6", "#2FB47CE6",
+             "#66CB5DE6", "#B1DD2FE6", "#FDE725E6")
+  
+  if (decomposition == "dim") {selector = c(3,7,8,9,11,1); colors = colors[-6]}
   else if (decomposition == "adim") selector = c(3,7,8,9,13,14,2)
   else stop("Please provide valid decomposition option.")
   
@@ -783,7 +787,7 @@ plot.HK2_decomposition = function(HK2_decomposition,
                pvalue = pvalue) %>%
       ggplot(aes(id, fill = Estimand)) +
       geom_rect(aes(xmin = id - 0.5, xmax = id + 0.5, ymin = end,ymax = start)) + 
-      scale_fill_brewer(palette="Dark2") + ylab("Decomposition") + 
+      scale_fill_manual(values = colors) + ylab("Decomposition") + 
       scale_x_continuous(breaks=1:length(estimand_labels),labels=estimand_labels) + 
       theme_bw() + geom_hline(yintercept = 0) +
       xlab("Estimand") + theme(legend.position="none") +
@@ -861,7 +865,7 @@ plot.HK2_decomposition = function(HK2_decomposition,
     ggplot(data, aes(x = xlab, fill = Estimand, group = Group)) +
       geom_rect(aes(xmin = as.numeric(id) - 0.5, xmax = as.numeric(id) + 0.5, 
                     ymin = end, ymax = start)) +
-      scale_fill_brewer(palette = "Dark2") +
+      scale_fill_manual(values = colors) +
       ylab("Decomposition") +
       theme_bw() +
       geom_hline(yintercept = 0) +
