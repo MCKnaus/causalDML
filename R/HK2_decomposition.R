@@ -737,6 +737,7 @@ print.HK2_decomposition = function(HK2_decomposition) {
 #' vector of length two like c(3,2) provides aggregate 2 minus aggregate 1.
 #' @param levels If TRUE, prints levels next to difference. Only applicable with length(x_aggregate) == 2.
 #' @param pe_digits Controls number of digits printed for point estimate.
+#' @param distance Controls distance between point estimate and p-value for fine-tuning. Default 0.04.
 #' 
 #' @importFrom dplyr %>%
 #' 
@@ -747,7 +748,8 @@ plot.HK2_decomposition = function(HK2_decomposition,
                                   t_aggregate = c(3,2),
                                   x_aggregate = c(3,2),
                                   levels = F,
-                                  pe_digits = 3) {
+                                  pe_digits = 3,
+                                  distance = 0.04) {
   
   # Hard-dcode colors obtained from viridis(7,begin = 0.3,alpha=0.9)
   colors = c("#35608DE6", "#287C8EE6", "#1F988BE6", "#2FB47CE6",
@@ -791,8 +793,8 @@ plot.HK2_decomposition = function(HK2_decomposition,
       scale_x_continuous(breaks=1:length(estimand_labels),labels=estimand_labels) + 
       theme_bw() + geom_hline(yintercept = 0) +
       xlab("Estimand") + theme(legend.position="none") +
-      geom_text(aes(x = id, y = (start+end+range_values*0.04)/2, label = coef),size = 2.75) +
-      geom_text(aes(x = id, y = (start+end-range_values*0.04)/2, label = pvalue),size = 2.75)
+      geom_text(aes(x = id, y = (start+end+range_values*distance)/2, label = coef),size = 2.75) +
+      geom_text(aes(x = id, y = (start+end-range_values*distance)/2, label = pvalue),size = 2.75)
   }
   else if (isTRUE(levels) & length(x_aggregate) == 2) {
     # First level
@@ -871,8 +873,8 @@ plot.HK2_decomposition = function(HK2_decomposition,
       geom_hline(yintercept = 0) +
       xlab("Estimand") +
       theme(legend.position = "none") +
-      geom_text(aes(x = xlab, y = (start + end + range_values * 0.04) / 2, label = coef), size = 2.75) +
-      geom_text(aes(x = xlab, y = (start + end - range_values * 0.04) / 2, label = pvalue), size = 2.75) +
+      geom_text(aes(x = xlab, y = (start + end + range_values * distance) / 2, label = coef), size = 2.75) +
+      geom_text(aes(x = xlab, y = (start + end - range_values * distance) / 2, label = pvalue), size = 2.75) +
       facet_wrap(~Group, scales = "free_x")
     
   }
