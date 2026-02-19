@@ -15,7 +15,7 @@
 #' @return Returns an \code{HK2_decomposition} object:
 #'          \item{parameter}{14 x # of heterogeneity groups x # of treatment aggregates x 2 array
 #'          storing point estimates and standard error of target and intermediate parameters. The ordering is
-#'          c("CM","ACM","d0","s1","s2","s3","d1","d2","d3","Cov(etX,mut|Xg)","d4","SRCT2","d4'","d5").}
+#'          c("GM","AGM","d0","s1","s2","s3","d1","d2","d3","Cov(etX,mut|Xg)","d4","SRCT2","d4'","d5").}
 #'          \item{IFs}{14 x # of heterogeneity groups x # of treatment aggregates x n x 6 array
 #'          storing the influence fcts and its components corresponding to each parameter for further use.}
 #'          \item{mapping}{Logical matrix storing the mapping of aggregate and effective treatment.}
@@ -393,7 +393,7 @@ HK2_decomposition = function(Y,A,G,
   ### Decomposition target parameters - levels
   TP_level= array(NA, dim = c(14,num_G,num_A,2))
   TP_level_IF = array(NA, dim = c(14,num_G,num_A,n,6))
-  dimnames(TP_level)[[1]] = dimnames(TP_level_IF)[[1]] = c("CM","ACM","d0","s1","s2","s3","d1","d2","d3",
+  dimnames(TP_level)[[1]] = dimnames(TP_level_IF)[[1]] = c("GM","AGM","d0","s1","s2","s3","d1","d2","d3",
                                                            "Cov(etX,mut|Xg)","d4","SRCT2","d4'","d5")
   dimnames(TP_level)[[2]] = dimnames(TP_level_IF)[[2]] = G_label
   dimnames(TP_level)[[3]] = dimnames(TP_level_IF)[[3]] = A_label
@@ -917,7 +917,7 @@ HK2_parameter_maker = function(level,
     if (length(t_aggregate) == 1 & length(x_aggregate) == 1) {
       results[p,1] = level[p,x_aggregate,t_aggregate,1]
       IF = level_IF[p,x_aggregate,t_aggregate,,]
-      rownames(results) = c("CM","ACM","d0","s1","s2","s3","d1","d2","d3",
+      rownames(results) = c("GM","AGM","d0","s1","s2","s3","d1","d2","d3",
                             "Cov(etX,mut|Xg)","d4","SRCT2","d4'","d5")
     }
     if (length(t_aggregate) == 2 & length(x_aggregate) == 1) {
@@ -929,7 +929,7 @@ HK2_parameter_maker = function(level,
     if (length(t_aggregate) == 1 & length(x_aggregate) == 2) {
       results[p,1] = level[p,x_aggregate[1],t_aggregate,1] - level[p,x_aggregate[2],t_aggregate,1]
       IF = level_IF[p,x_aggregate[1],t_aggregate,,] - level_IF[p,x_aggregate[2],t_aggregate,,]
-      rownames(results) = c("CM","ACM","d0","l1","l2","l3","d1","d2","d3",
+      rownames(results) = c("GM","AGM","d0","l1","l2","l3","d1","d2","d3",
                             "Cov(etX,mut|Xg)","d4","SRCT2","d4'","d5")
     }
     if (length(t_aggregate) == 2 & length(x_aggregate) == 2) {
