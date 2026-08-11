@@ -10,7 +10,8 @@
   t_aggregate = c(3, 2),
   x_aggregate = c(3, 2),
   levels = F,
-  pe_digits = 3
+  pe_digits = 3,
+  distance = 0.04
 )
 }
 \arguments{
@@ -31,6 +32,8 @@ vector of length two like c(3,2) provides aggregate 2 minus aggregate 1.}
 \item{levels}{If TRUE, prints levels next to difference. Only applicable with length(x_aggregate) == 2.}
 
 \item{pe_digits}{Controls number of digits printed for point estimate.}
+
+\item{distance}{Controls distance between point estimate and p-value for fine-tuning. Default 0.04.}
 }
 \description{
 \code{plot} method for class \code{\link{HK2_decomposition}}

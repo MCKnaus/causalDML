@@ -11,6 +11,8 @@
 #' @param m_mat n x J matrix with fitted outcome values.
 #' @param sampling_weights Optional vector of sampling weights.
 #' @param cl If not NULL, vector with cluster variables.
+#' @param return_intermediates If \code{TRUE}, returns intermediate estimates
+#' and influence functions.
 #'
 #' @return Returns an \code{HK2_decomposition} object:
 #'          \item{parameter}{14 x # of heterogeneity groups x # of treatment aggregates x 2 array
@@ -21,6 +23,8 @@
 #'          \item{mapping}{Logical matrix storing the mapping of aggregate and effective treatment.}
 #'          \item{label}{List of labels for further useage.}
 #'          \item{cl}{Cluster variable if specified.}
+#'          If \code{return_intermediates = TRUE}, additionally returns the
+#'          lists \code{intermediate_results} and \code{intermediate_IFs}.
 #'
 #' @references
 #' \itemize{
@@ -30,11 +34,12 @@
 #' @export
 #'
 HK2_decomposition = function(Y,A,G,
-                            T_mat,
-                            e_mat,
-                            m_mat,
-                            sampling_weights = NULL,
-                            cl = NULL) {
+                             T_mat,
+                             e_mat,
+                             m_mat,
+                             sampling_weights = NULL,
+                             cl = NULL,
+                             return_intermediates = FALSE) {
   # Sanity check
   if (!(identical(colnames(e_mat), colnames(m_mat)) &&
         identical(colnames(m_mat), colnames(T_mat)))) {
@@ -420,10 +425,13 @@ HK2_decomposition = function(Y,A,G,
       
       ### Decomposition components
       # d0: eta*μt
+      # C_IF_* columns 2 and 3 already contain the normalized-weight Psia and
+      # Psib components from their earlier IF_maker calls. Use weights = NULL
+      # when aggregating them here so sampling weights are not applied twice.
       temp = IF_maker(ones, 
                       colSums(C_IF_ta_varying[1,a,,,3]),
                       colMeans(C_IF_ta_varying[1,a,,,2]),
-                      sampling_weights,cl)
+                      weights = NULL,cl = cl)
       TP_level[3,g,a,1] = temp$estimate
       TP_level[3,g,a,2] = temp$se
       TP_level_IF[3,g,a,,] = temp$IF
@@ -432,7 +440,7 @@ HK2_decomposition = function(Y,A,G,
       temp = IF_maker(ones, 
                       colSums(C_IF_tag_varying[4,a,g,,,3]),
                       colMeans(C_IF_tag_varying[4,a,g,,,2]),
-                      sampling_weights,cl)
+                      weights = NULL,cl = cl)
       TP_level[4,g,a,1] = temp$estimate
       TP_level[4,g,a,2] = temp$se
       TP_level_IF[4,g,a,,] = temp$IF
@@ -441,7 +449,7 @@ HK2_decomposition = function(Y,A,G,
       temp = IF_maker(ones, 
                       colSums(C_IF_tag_varying[5,a,g,,,3]),
                       colMeans(C_IF_tag_varying[5,a,g,,,2]),
-                      sampling_weights,cl)
+                      weights = NULL,cl = cl)
       TP_level[5,g,a,1] = temp$estimate
       TP_level[5,g,a,2] = temp$se
       TP_level_IF[5,g,a,,] = temp$IF
@@ -450,7 +458,7 @@ HK2_decomposition = function(Y,A,G,
       temp = IF_maker(ones, 
                       colSums(C_IF_tag_varying[1,a,g,,,3]),
                       colMeans(C_IF_tag_varying[1,a,g,,,2]),
-                      sampling_weights,cl)
+                      weights = NULL,cl = cl)
       TP_level[6,g,a,1] = temp$estimate
       TP_level[6,g,a,2] = temp$se
       TP_level_IF[6,g,a,,] = temp$IF
@@ -489,11 +497,11 @@ HK2_decomposition = function(Y,A,G,
       temp = IF_maker(ones, 
                       colSums(C_IF_tag_varying[2,a,g,,,3]),
                       colMeans(C_IF_tag_varying[2,a,g,,,2]),
-                      sampling_weights,cl)
+                      weights = NULL,cl = cl)
       TP_level[12,g,a,1] = temp$estimate
       TP_level[12,g,a,2] = temp$se
       TP_level_IF[12,g,a,,] = temp$IF
-    
+      
       # d4': Cov(etaX,mutX|XG)
       TP_level[13,g,a,1] = sum(C_tag_varying[6,a,g,treatment_mapping[,a],1])
       # Handle special case where column dimension gets lost and drop=F would keep all array dims
@@ -521,6 +529,39 @@ HK2_decomposition = function(Y,A,G,
                 cl = cl)
   
   class(output) = "HK2_decomposition"
+  
+  if (return_intermediates) {
+    output$intermediate_results = list(
+      NP_ti_varying = NP_ti_varying,
+      NP_ai_varying = NP_ai_varying,
+      NP_tai_varying = NP_tai_varying,
+      NP_gi_varying = NP_gi_varying,
+      NP_agi_varying = NP_agi_varying,
+      NP_a_varying = NP_a_varying,
+      NP_g_varying = NP_g_varying,
+      NP_t_varying = NP_t_varying,
+      NP_ta_varying = NP_ta_varying,
+      NP_tg_varying = NP_tg_varying,
+      NP_ag_varying = NP_ag_varying,
+      NP_tag_varying = NP_tag_varying,
+      C_tag_varying = C_tag_varying,
+      C_tg_varying = C_tg_varying,
+      C_ta_varying = C_ta_varying
+    )
+    output$intermediate_IFs = list(
+      NP_IF_a_varying = NP_IF_a_varying,
+      NP_IF_g_varying = NP_IF_g_varying,
+      NP_IF_t_varying = NP_IF_t_varying,
+      NP_IF_ta_varying = NP_IF_ta_varying,
+      NP_IF_tg_varying = NP_IF_tg_varying,
+      NP_IF_ag_varying = NP_IF_ag_varying,
+      NP_IF_tag_varying = NP_IF_tag_varying,
+      C_IF_tag_varying = C_IF_tag_varying,
+      C_IF_tg_varying = C_IF_tg_varying,
+      C_IF_ta_varying = C_IF_ta_varying
+    )
+  }
+  
   output
 }
 
@@ -656,7 +697,7 @@ HK2_result_collector = function(HK2_decomposition,
   res[,3] = res[,1] / res[,2]
   res[,3][is.na(res[,3])] = 0
   # p-value
-  res[,4] = 2 * stats::pt(abs(res[,3]),nrow(HK2_decomposition$IFs),lower = FALSE)
+  res[,4] = 2 * stats::pt(abs(res[,3]),dim(HK2_decomposition$IFs)[4],lower = FALSE)
   return(res)
 }
 
